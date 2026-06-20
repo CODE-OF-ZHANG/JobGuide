@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">职引助手</string>
+    <string name="accessibility_service_label">职引助手自动化服务</string>
+    <string name="accessibility_service_description">用于在用户主动开始任务后读取屏幕文字、点击按钮、输入打招呼内容并执行求职自动化流程。不会读取或保存账号密码，不会绕过验证码、登录或安全验证。</string>
+</resources>

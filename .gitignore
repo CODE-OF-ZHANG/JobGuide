@@ -1,0 +1,18 @@
+*.iml
+.gradle
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+*.apk
+*.aab
+*.log
+keystore.properties
+*.jks
+*.keystore
+# 个人配置文件，含姓名、手机号等隐私信息
+zhangxu.json
