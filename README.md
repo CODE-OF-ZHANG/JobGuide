@@ -1,261 +1,244 @@
+<div align="center">
+
 # 职引助手 JobGuide
 
-职引助手是一个 Android 原生求职自动化工具原型，项目名 `JobGuide`，包名 `com.zhiyin.jobguide`。它通过 Android 无障碍服务读取 BOSS 直聘 App 的屏幕可见内容，并在用户主动开始任务后模拟点击、输入和有限自动化流程。
+<p>
+  <img src="https://img.shields.io/badge/platform-Android-34A853?logo=android&logoColor=white" alt="Android" />
+  <img src="https://img.shields.io/badge/language-Kotlin-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin" />
+  <img src="https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white" alt="Jetpack Compose" />
+  <img src="https://img.shields.io/badge/minSDK-24-00BCD4" alt="minSDK 24" />
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License" />
+</p>
 
-本项目不是招聘平台官方客户端，不调用非公开接口，不保存账号密码，不绕过验证码、登录、安全验证或风控。检测到验证码、登录异常、安全验证、账号异常、操作频繁、稍后再试等风险提示时，会停止或暂停任务。
+**Android 求职自动化辅助工具** — 基于 AccessibilityService 的多平台批量打招呼
 
-## 1. 产品功能说明
+[功能亮点](#-功能亮点) · [支持平台](#-支持平台) · [截图预览](#-截图预览) · [快速开始](#-快速开始) · [配置说明](#-配置说明) · [安全机制](#-安全机制) · [技术架构](#-技术架构) · [贡献指南](#-贡献指南)
 
-- 配置岗位搜索关键词、每个关键词处理岗位数、每个关键词打招呼上限、今日总打招呼上限。
-- 配置目标城市、薪资范围、必备关键词、岗位/公司白名单、岗位/公司黑名单、风险停止词和随机操作间隔。
-- 配置多个打招呼模板，支持 `{name}`、`{job_title}`、`{company}`、`{city}`、`{salary}`、`{skills}`、`{keyword}` 变量。
-- 支持三种运行模式：只输入不发送、发送前确认、自动打招呼。
-- 自动打招呼必须由用户主动开启，默认使用发送前确认。
-- 支持开始、暂停、停止任务。
-- 支持本地运行日志、岗位处理记录、JSON 配置导入导出。
-- 首次使用引导用户开启无障碍权限，并说明权限用途。
+</div>
 
-## 2. 页面结构设计
+---
 
-- 执行页：首页状态看板，显示任务状态、今日已处理、今日已打招呼、剩余额度、当前关键词、当前步骤、开始/暂停/停止按钮、运行模式和安全说明。
-- 关键词页：新增、删除、启用/停用、上移/下移关键词，配置每个关键词处理数量、打招呼数量和优先级。
-- 规则页：目标城市、薪资范围、必备关键词、白名单、黑名单、风险停止词、每日上限、随机间隔。
-- 模板页：新增、编辑、删除模板，设置默认模板，配置是否参与随机使用，展示变量列表。
-- 日志页：展示每一步自动化日志、岗位记录、跳过原因、失败原因和风险停止原因。
-- 我的页：求职者姓名、技能标签、期望城市、期望薪资、无障碍权限状态、导入导出配置、清理统计和记录、隐私说明、风险说明。
+## ✨ 功能亮点
 
-## 3. 用户使用流程
+- 🔍 **多关键词队列** — 按顺序搜索多个关键词，每个关键词可设置处理数量和打招呼上限
+- 🎯 **智能筛选** — 基于城市、薪资、白名单/黑名单、必备关键词的评分机制，自动跳过不匹配的岗位
+- 💬 **模板打招呼** — 支持多个打招呼模板，自动填充 `{name}`、`{job_title}`、`{company}`、`{city}`、`{salary}`、`{skills}`、`{keyword}` 变量
+- 🛡️ **风险检测** — 检测到验证码、安全验证、账号异常、操作频繁等风险提示时自动停止
+- 🔒 **三种运行模式** — 只输入不发送 / 发送前确认 / 自动打招呼（需手动开启）
+- 📊 **实时统计** — 今日处理数、打招呼数、剩余额度一目了然
+- 💾 **配置持久化** — 所有设置自动保存，重启不丢失
+- 📤 **JSON 导入导出** — 一键备份和恢复完整配置
 
-1. 安装并打开职引助手。
-2. 在“我的”页开启无障碍权限。
-3. 在关键词页配置岗位关键词，例如后端开发实习、Python开发、测试开发、AI应用开发。
-4. 在规则页配置城市、薪资、白名单、黑名单、风险停止词和打招呼上限。
-5. 在模板页配置打招呼文案。
-6. 回到执行页选择运行模式。建议先用“发送前确认”或“只输入不发送”。
-7. 点击“开始执行”。
-8. App 打开 BOSS 直聘，按关键词搜索、筛选岗位、进入详情、输入打招呼内容。
-9. 若选择自动打招呼且已打开自动开关，才会点击发送。
-10. 所有关键词完成或达到限额后任务结束；遇到风险提示或关键控件缺失时暂停/停止。
+## 📱 支持平台
 
-## 4. AccessibilityService 自动化流程设计
+| 平台 | 包名 | 搜索模式 | 推荐模式 |
+|:---:|:---|:---:|:---:|
+| BOSS 直聘 | `com.hpbr.bosszhipin` | ✅ 关键词搜索 / 推荐流 | 发送前确认 |
+| 前程无忧 51job | `com.job.android` | ✅ 关键词搜索 | 只输入不发送 |
+| 智联招聘 | `com.zhaopin.social` | ✅ 关键词搜索 | 只输入不发送 |
+| 猎聘 | `com.lietou.mishu` | ✅ 关键词搜索 | 发送前确认 |
 
-核心实现位于：
+> ⚠️ 本项目不是招聘平台官方客户端，不调用非公开接口，不保存账号密码，不绕过验证码。
 
-- `app/src/main/java/com/zhiyin/jobguide/automation/JobGuideAccessibilityService.kt`
-- `app/src/main/java/com/zhiyin/jobguide/automation/AccessibilityNodeExt.kt`
-- `app/src/main/java/com/zhiyin/jobguide/automation/JobMatcher.kt`
+## 📸 截图预览
 
-流程：
+| 执行页 | 关键词页 | 规则页 |
+|:---:|:---:|:---:|
+| 执行控制台 | 关键词队列配置 | 筛选规则配置 |
 
-1. 主 App 写入 `Start/Pause/Stop` 命令到 DataStore。
-2. 无障碍服务监听命令。
-3. `Start` 后打开 BOSS 直聘包 `com.hpbr.bosszhipin`。
-4. 查找搜索入口，输入当前关键词，点击搜索。
-5. 读取当前窗口无障碍节点的可见文本。
-6. 识别候选岗位卡片，并基于关键词、城市、薪资、白名单、黑名单和必备关键词评分。
-7. 命中黑名单或低于最低评分的岗位写入“跳过”记录。
-8. 符合规则的岗位进入详情页。
-9. 查找“立即沟通/继续沟通/打招呼/沟通”按钮。
-10. 查找聊天输入框并写入模板文案。
-11. 根据运行模式决定暂停等待确认、只输入不发送或自动点击发送。
-12. 写入岗位记录和运行日志。
-13. 达到关键词处理数量、关键词打招呼上限或今日总上限后切换/结束。
+| 模板页 | 日志页 | 我的页 |
+|:---:|:---:|:---:|
+| 打招呼模板 | 运行日志和岗位记录 | 求职者信息和权限 |
 
-## 5. 数据结构设计
+## 🚀 快速开始
 
-主要数据模型位于 `app/src/main/java/com/zhiyin/jobguide/data/Models.kt`。
+### 环境要求
 
-- `AppConfig`：完整配置，包括关键词、规则、模板、个人资料、运行模式、自动打招呼开关。
-- `KeywordSetting`：关键词、启用状态、处理数量、打招呼数量、优先级。
-- `RulesConfig`：城市、薪资、必备关键词、白名单、黑名单、风险停止词、每日上限、随机间隔。
-- `GreetingTemplate`：模板标题、正文、默认模板、随机使用开关。
-- `ProfileConfig`：姓名、技能、期望城市、期望薪资。
-- `RunStats`：任务状态、今日处理数、今日打招呼数、当前关键词、当前步骤、风险原因。
-- `RunLog`：运行日志。
-- `JobRecord`：岗位处理记录和去重指纹。
-- `AutomationCommand`：开始、暂停、停止命令。
+- Android Studio Hedgehog 或更高版本
+- Android 设备（API 24+，即 Android 7.0 以上）
+- 目标招聘平台 App 已安装
 
-## 6. JSON 配置示例
+### 编译安装
 
-```json
-{
-  "keywords": [
-    {
-      "id": "backend-intern",
-      "name": "后端开发实习",
-      "enabled": true,
-      "maxJobs": 20,
-      "maxGreetings": 5,
-      "priority": 3
-    },
-    {
-      "id": "python-dev",
-      "name": "Python开发",
-      "enabled": true,
-      "maxJobs": 20,
-      "maxGreetings": 5,
-      "priority": 2
-    }
-  ],
-  "rules": {
-    "targetCities": ["长沙"],
-    "salaryMinK": 3,
-    "salaryMaxK": 12,
-    "requiredKeywords": ["后端", "Python", "Java", "测试", "AI"],
-    "jobWhitelist": ["后端", "Python", "Java", "测试开发", "软件开发", "AI应用"],
-    "companyWhitelist": [],
-    "jobBlacklist": ["销售", "电销", "客服", "招生", "主播", "课程顾问", "培训", "外包", "人力资源"],
-    "companyBlacklist": [],
-    "riskStopWords": ["验证码", "登录", "安全验证", "账号异常", "操作频繁", "稍后再试"],
-    "dailyGreetingLimit": 15,
-    "minDelaySeconds": 5,
-    "maxDelaySeconds": 12,
-    "minMatchScore": 40
-  },
-  "templates": [
-    {
-      "id": "default",
-      "title": "默认模板",
-      "body": "老师您好，我是{name}，看到贵公司的{job_title}岗位后，感觉和我的求职方向比较匹配。我熟悉{skills}，对{keyword}相关工作很感兴趣。方便的话，麻烦您查看一下我的简历，期待有机会进一步沟通，谢谢老师。",
-      "isDefault": true,
-      "randomEnabled": true
-    }
-  ],
-  "profile": {
-    "name": "张旭",
-    "skills": ["Kotlin", "Java", "Python", "MySQL", "Linux"],
-    "expectedCities": ["长沙"],
-    "expectedSalary": "3-8K"
-  },
-  "runMode": "ConfirmBeforeSend",
-  "autoGreetingEnabled": false
-}
+```bash
+# 克隆项目
+git clone https://github.com/你的用户名/JobGuide.git
+cd JobGuide
+
+# 编译 Debug APK
+./gradlew assembleDebug
+
+# APK 输出位置
+# app/build/outputs/apk/debug/app-debug.apk
 ```
 
-## 7. Android 项目目录结构
+或用 Android Studio 直接打开项目，等待 Gradle 同步完成后点击 Run。
 
-```text
+### 使用步骤
+
+1. **安装并打开**职引助手
+2. **开启无障碍权限** — 在"我的"页或执行页点击"去设置"，在系统设置中开启职引助手的无障碍服务
+3. **配置关键词** — 在关键词页添加搜索关键词，设置每个关键词的打招呼上限
+4. **配置规则** — 在规则页设置目标城市、薪资范围、白名单、黑名单、风险停止词
+5. **配置模板** — 在模板页编写打招呼文案，使用 `{name}`、`{job_title}` 等变量
+6. **选择模式** — 建议先用"发送前确认"模式熟悉流程
+7. **点击开始** — 自动打开招聘平台 App 并执行自动化流程
+
+## ⚙️ 配置说明
+
+### 关键词配置
+
+每个关键词支持：
+- 启用/停用开关
+- 处理岗位数量上限
+- 打招呼数量上限
+- 优先级排序
+
+### 规则配置
+
+| 配置项 | 说明 | 默认值 |
+|:---|:---|:---|
+| 目标城市 | 只处理指定城市的岗位 | `城市` |
+| 薪资范围 | 过滤不在范围内的岗位 | 5K - 15K |
+| 必备关键词 | 岗位必须包含的关键词 | `关键词1, 关键词2` |
+| 岗位白名单 | 包含白名单词的岗位加分 | `岗位白名单1, 岗位白名单2` |
+| 岗位黑名单 | 包含黑名单词的岗位直接跳过 | `销售, 电销, 外包...` |
+| 风险停止词 | 检测到时立即停止任务 | `验证码, 安全验证...` |
+| 每日总上限 | 每天最多打招呼次数 | 15 |
+| 随机间隔 | 两次操作之间的随机等待秒数 | 5-12 秒 |
+| 最低评分 | 低于此分数的岗位跳过 | 40 |
+
+### 打招呼模板
+
+支持以下变量自动替换：
+
+| 变量 | 替换为 |
+|:---|:---|
+| `{name}` | 求职者姓名 |
+| `{job_title}` | 岗位名称 |
+| `{company}` | 公司名称 |
+| `{city}` | 城市 |
+| `{salary}` | 薪资范围 |
+| `{skills}` | 技能标签 |
+| `{keyword}` | 当前搜索关键词 |
+
+### JSON 配置导入导出
+
+在"我的"页可以导入/导出完整的 JSON 配置，方便在多台设备间同步设置。
+
+## 🛡️ 安全机制
+
+- **风险检测**：遇到验证码、安全验证、账号异常、操作频繁等提示时自动停止
+- **盲目防护**：找不到关键按钮时暂停，不进行盲目点击
+- **限额控制**：每日总打招呼上限 + 每个关键词上限，双重保护
+- **指纹去重**：已处理岗位通过指纹去重，避免重复打招呼
+- **手动确认**：自动发送需同时开启运行模式和自动打招呼开关
+- **随机间隔**：操作之间加入随机等待，降低风控风险
+
+## 🏗️ 技术架构
+
+```
+┌─────────────────────────────────────────┐
+│              Jetpack Compose UI          │
+│  (JobGuideApp · JobGuideViewModel)      │
+├─────────────────────────────────────────┤
+│              DataStore Preferences       │
+│  (AppConfig · RunStats · Logs · Records)│
+├─────────────────────────────────────────┤
+│           AccessibilityService           │
+│  (JobGuideAccessibilityService)          │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ │
+│  │PageHeuristics│ │JobMatcher│ │NodeExt  │ │
+│  └──────────┘ └──────────┘ └──────────┘ │
+├─────────────────────────────────────────┤
+│         目标招聘平台 App                  │
+│  (BOSS直聘 · 51job · 智联 · 猎聘)       │
+└─────────────────────────────────────────┘
+```
+
+### 核心模块
+
+| 模块 | 文件 | 职责 |
+|:---|:---|:---|
+| 无障碍服务 | `JobGuideAccessibilityService.kt` | 读取屏幕、模拟点击、自动化流程 |
+| 页面识别 | `PageHeuristics.kt` | 基于文本特征判断当前页面类型 |
+| 节点扩展 | `AccessibilityNodeExt.kt` | 无障碍节点查找、点击、输入工具方法 |
+| 岗位匹配 | `JobMatcher.kt` | 基于规则和评分的岗位筛选逻辑 |
+| 数据模型 | `Models.kt` | 配置、状态、日志、记录等数据类 |
+| 数据仓库 | `JobGuideRepository.kt` | DataStore 读写和状态管理 |
+| 视图模型 | `JobGuideViewModel.kt` | UI 状态管理和业务逻辑 |
+| 界面 | `JobGuideApp.kt` | Compose UI 全部页面 |
+
+### 通信机制
+
+UI（ViewModel）和 AccessibilityService 之间通过 DataStore 命令通道通信：
+
+```
+ViewModel ──issueCommand──▶ DataStore ──collect──▶ AccessibilityService
+         ◀──stats/logs/records── DataStore ◀──write──
+```
+
+## 🧪 测试
+
+```bash
+# 编译验证
+./gradlew assembleDebug
+
+# 运行单元测试
+./gradlew test
+
+# 测试覆盖：页面识别、岗位匹配、薪资解析、JSON导入导出
+```
+
+## 📁 项目结构
+
+```
 app/src/main/java/com/zhiyin/jobguide/
-  MainActivity.kt
-  automation/
-    AccessibilityNodeExt.kt
-    JobGuideAccessibilityService.kt
-    JobMatcher.kt
-  data/
-    JobGuideRepository.kt
-    Models.kt
-    ServiceLocator.kt
-  ui/
-    JobGuideApp.kt
-    JobGuideViewModel.kt
-    theme/
-      Color.kt
-      Theme.kt
-      Type.kt
-app/src/main/res/xml/
-  jobguide_accessibility_service.xml
+├── MainActivity.kt                    # 主 Activity
+├── automation/
+│   ├── JobGuideAccessibilityService.kt  # 无障碍服务核心逻辑
+│   ├── AccessibilityNodeExt.kt          # 节点操作扩展
+│   ├── JobMatcher.kt                    # 岗位评分匹配
+│   └── PageHeuristics.kt                # 页面类型识别
+├── data/
+│   ├── Models.kt                        # 数据模型和JSON序列化
+│   ├── JobGuideRepository.kt            # DataStore 数据仓库
+│   └── ServiceLocator.kt                # 依赖注入
+├── notification/
+│   └── StopNotifier.kt                  # 任务停止通知
+└── ui/
+    ├── JobGuideApp.kt                   # Compose 全部页面
+    ├── JobGuideViewModel.kt             # 视图模型
+    └── theme/                            # 主题配置
 ```
 
-## 8. Kotlin + Jetpack Compose 页面代码示例
+## 🤝 贡献指南
 
-核心页面代码在 `JobGuideApp.kt`：
+1. Fork 本仓库
+2. 创建功能分支：`git checkout -b feature/your-feature`
+3. 提交更改：`git commit -m 'feat: add your feature'`
+4. 推送分支：`git push origin feature/your-feature`
+5. 提交 Pull Request
 
-```kotlin
-Scaffold(
-    topBar = { TopAppBar(title = { Text("职引助手") }) },
-    bottomBar = { NavigationBar { /* 执行、关键词、规则、模板、日志、我的 */ } }
-) { padding ->
-    when (selectedTab) {
-        AppTab.Home -> HomeScreen(state, viewModel)
-        AppTab.Keywords -> KeywordsScreen(state.config.keywords, viewModel)
-        AppTab.Rules -> RulesScreen(state.config.rules, viewModel)
-        AppTab.Templates -> TemplatesScreen(state.config.templates, viewModel)
-        AppTab.Logs -> LogsScreen(state.logs, state.records, viewModel)
-        AppTab.Profile -> ProfileScreen(state, viewModel)
-    }
-}
-```
+### 开发规范
 
-## 9. AccessibilityService 核心代码示例
+- Kotlin 优先，遵循 MVVM / Clean Architecture
+- 禁止使用 `!!` 非空断言，优先使用 `?.let`、`as?` 等空安全操作
+- 网络/数据库/文件操作必须在子线程
+- 新增权限须在 README 中说明是否需要动态申请
 
-核心入口在 `JobGuideAccessibilityService.kt`：
+## ⚠️ 免责声明
 
-```kotlin
-private fun handleCommand(command: AutomationCommand) {
-    when (command.type) {
-        AutomationCommandType.Start -> startAutomation()
-        AutomationCommandType.Pause -> pauseAutomation("用户暂停任务")
-        AutomationCommandType.Stop -> stopAutomation("用户停止任务")
-        AutomationCommandType.None -> Unit
-    }
-}
-```
+本项目仅供学习和研究目的。使用者需遵守相关招聘平台的使用条款和当地法律法规。作者不对因使用本工具产生的任何后果负责。
 
-风险检测：
+## 📄 开源协议
 
-```kotlin
-private fun assertNoRisk(root: AccessibilityNodeInfo, config: AppConfig, keyword: String) {
-    val joined = root.joinedText()
-    val hit = config.rules.riskStopWords.firstOrNull { joined.contains(it, ignoreCase = true) }
-    if (hit != null) {
-        throw StopAutomation("检测到风险提示：$hit，任务已停止", keyword = keyword, isRisk = true)
-    }
-}
-```
+[MIT License](LICENSE)
 
-## 10. Room 或 DataStore 保存方案
+---
 
-当前实现使用 DataStore Preferences，原因是配置、日志和导入导出都天然是 JSON 文档形态，适合快速开发和单用户本地存储。
+<div align="center">
 
-实现位于 `JobGuideRepository.kt`：
+如果这个项目对你有帮助，请给一个 ⭐ Star！
 
-- `config_json` 保存 `AppConfig`。
-- `stats_json` 保存 `RunStats`。
-- `logs_json` 保存最近 300 条日志。
-- `records_json` 保存最近 800 条岗位记录。
-- `command_json` 保存自动化命令。
-
-后续如果岗位记录需要复杂查询，可以把 `JobRecord` 迁移到 Room，配置仍保留 DataStore。
-
-## 11. 风险检测和停止机制
-
-- 风险停止词由用户配置，默认包含验证码、登录、安全验证、账号异常、操作频繁、稍后再试。
-- 每次读取页面后都会执行风险检测。
-- 找不到搜索入口、搜索输入框、搜索按钮、沟通按钮、聊天输入框或发送按钮时暂停，不进行盲目点击。
-- 每次关键操作之间加入随机等待。
-- 今日总打招呼次数不能超过用户设置的上限。
-- 每个关键词打招呼次数不能超过用户设置的上限。
-- 已处理岗位通过指纹去重，避免重复打招呼。
-- 自动发送必须同时满足 `runMode == AutoSend` 和 `autoGreetingEnabled == true`。
-
-## 12. 开发步骤
-
-1. 完成包名、应用名、无障碍服务声明和 DataStore 依赖。
-2. 建立 MVVM：`JobGuideViewModel` 汇总配置、状态、日志、记录。
-3. 建立数据模型和 JSON 导入导出。
-4. 完成 Compose 六个页面。
-5. 实现 AccessibilityService 命令监听和 BOSS App 启动。
-6. 实现无障碍树读取、节点查找、岗位评分、风险检测和模板输入。
-7. 接入限额、去重和运行日志。
-8. 真机调试 BOSS 页面控件匹配，根据日志迭代选择器。
-
-## 13. 测试方案
-
-- 构建验证：执行 `.\gradlew.bat :app:assembleDebug`。
-- 单元测试：岗位评分、薪资解析、白名单/黑名单、模板渲染、JSON 导入导出。
-- 真机冒烟测试：
-  - 启动 App，确认六个页面可编辑。
-  - 开启无障碍权限。
-  - 使用“只输入不发送”模式处理 1 个关键词、1 个岗位。
-  - 检查日志和岗位记录。
-- 安全测试：
-  - 人为把风险停止词设为当前页面可见文字，确认任务停止。
-  - 关闭自动打招呼开关，确认自动发送被阻止。
-  - 设置今日上限为 0，确认不会发送。
-  - 在找不到按钮的页面启动，确认暂停而不是盲点。
-
-Debug APK 输出位置：
-
-```text
-app/build/outputs/apk/debug/app-debug.apk
-```
+</div>
