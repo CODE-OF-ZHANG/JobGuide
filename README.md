@@ -2,117 +2,125 @@
 
 # 职引助手 JobGuide
 
+面向 Android 的多招聘平台求职自动化辅助工具，基于无障碍服务帮助你按规则筛选岗位、填写打招呼模板并控制每日沟通节奏。
+
 <p>
   <img src="https://img.shields.io/badge/platform-Android-34A853?logo=android&logoColor=white" alt="Android" />
   <img src="https://img.shields.io/badge/language-Kotlin-7F52FF?logo=kotlin&logoColor=white" alt="Kotlin" />
   <img src="https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?logo=jetpackcompose&logoColor=white" alt="Jetpack Compose" />
   <img src="https://img.shields.io/badge/minSDK-24-00BCD4" alt="minSDK 24" />
-  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License" />
+  <img src="https://img.shields.io/badge/targetSDK-36-0E7490" alt="targetSDK 36" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT License" /></a>
 </p>
 
-**Android 求职自动化辅助工具** — 基于 AccessibilityService 的多平台批量打招呼
+<p>
+  <a href="#features">功能亮点</a> ·
+  <a href="#screenshots">应用截图</a> ·
+  <a href="#quick-start">快速开始</a> ·
+  <a href="#configuration">配置说明</a> ·
+  <a href="#architecture">技术架构</a> ·
+  <a href="#safety">安全边界</a> ·
+  <a href="#roadmap">Roadmap</a>
+</p>
 
-[功能亮点](#-功能亮点) · [支持平台](#-支持平台) · [截图预览](#-截图预览) · [快速开始](#-快速开始) · [配置说明](#-配置说明) · [安全机制](#-安全机制) · [技术架构](#-技术架构) · [贡献指南](#-贡献指南)
 
-</div>
 
 ---
 
-## ✨ 功能亮点
+> JobGuide 不是任何招聘平台的官方客户端，不调用非公开接口，不保存账号密码，也不会绕过验证码、登录校验或安全验证。请遵守相关平台条款和当地法律法规，优先使用“发送前确认”或“只输入不发送”模式。
 
-- 🔍 **多关键词队列** — 按顺序搜索多个关键词，每个关键词可设置处理数量和打招呼上限
-- 🎯 **智能筛选** — 基于城市、薪资、白名单/黑名单、必备关键词的评分机制，自动跳过不匹配的岗位
-- 💬 **模板打招呼** — 支持多个打招呼模板，自动填充 `{name}`、`{job_title}`、`{company}`、`{city}`、`{salary}`、`{skills}`、`{keyword}` 变量
-- 🛡️ **风险检测** — 检测到验证码、安全验证、账号异常、操作频繁等风险提示时自动停止
-- 🔒 **三种运行模式** — 只输入不发送 / 发送前确认 / 自动打招呼（需手动开启）
-- 📊 **实时统计** — 今日处理数、打招呼数、剩余额度一目了然
-- 💾 **配置持久化** — 所有设置自动保存，重启不丢失
-- 📤 **JSON 导入导出** — 一键备份和恢复完整配置
+## 功能亮点
 
-## 📱 支持平台
+- **多平台适配**：支持 BOSS 直聘、前程无忧 51job、智联招聘、猎聘等主流招聘 App。
+- **关键词队列**：按关键词顺序搜索岗位，并为每个关键词独立设置处理数量和沟通上限。
+- **岗位筛选规则**：基于城市、薪资、白名单、黑名单、必备关键词和最低评分自动跳过不匹配岗位。
+- **模板化打招呼**：支持 `{name}`、`{job_title}`、`{company}`、`{city}`、`{salary}`、`{skills}`、`{keyword}` 等变量。
+- **三种运行模式**：只输入不发送、发送前确认、自动打招呼，方便从低风险模式逐步试用。
+- **风险自动停止**：识别验证码、安全验证、账号异常、操作频繁等提示后停止任务。
+- **任务统计与记录**：展示今日处理岗位、成功沟通、剩余额度，并记录运行日志和岗位处理结果。
+- **配置导入导出**：使用 JSON 备份和恢复完整配置，便于多设备同步。
 
-| 平台 | 包名 | 搜索模式 | 推荐模式 |
-|:---:|:---|:---:|:---:|
-| BOSS 直聘 | `com.hpbr.bosszhipin` | ✅ 关键词搜索 / 推荐流 | 发送前确认 |
-| 前程无忧 51job | `com.job.android` | ✅ 关键词搜索 | 只输入不发送 |
-| 智联招聘 | `com.zhaopin.social` | ✅ 关键词搜索 | 只输入不发送 |
-| 猎聘 | `com.lietou.mishu` | ✅ 关键词搜索 | 发送前确认 |
+## 应用截图
 
-> ⚠️ 本项目不是招聘平台官方客户端，不调用非公开接口，不保存账号密码，不绕过验证码。
+| 执行总览 | 运行模式 |
+|:---:|:---:|
+| <img src="docs/images/readme/jobguide-home.jpg" alt="执行页和任务配置" width="360" /> | <img src="docs/images/readme/jobguide-mode.jpg" alt="岗位来源和运行模式配置" width="360" /> |
+| 查看自动打招呼开关、任务配置、筛选规则和无障碍权限状态。 | 在关键词搜索与推荐流之间切换，并选择只输入、确认后发送或自动发送。 |
 
-## 📸 截图预览
+| 平台选择 | 执行控制台 |
+|:---:|:---:|
+| <img src="docs/images/readme/jobguide-platforms.jpg" alt="招聘平台选择" width="360" /> | <img src="docs/images/readme/jobguide-console.jpg" alt="执行控制台" width="360" /> |
+| 为单次任务选择目标招聘平台，避免跨平台混跑。 | 跟踪今日进度、当前来源、剩余额度，并手动开始、暂停或停止任务。 |
 
-| 执行页 | 关键词页 | 规则页 |
-|:---:|:---:|:---:|
-| 执行控制台 | 关键词队列配置 | 筛选规则配置 |
+## 支持平台
 
-| 模板页 | 日志页 | 我的页 |
-|:---:|:---:|:---:|
-| 打招呼模板 | 运行日志和岗位记录 | 求职者信息和权限 |
+| 平台 | Android 包名 | 搜索方式 | 推荐运行模式 |
+|:---|:---|:---:|:---:|
+| BOSS 直聘 | `com.hpbr.bosszhipin` | 关键词搜索 / 推荐流 | 发送前确认 |
+| 前程无忧 51job | `com.job.android` | 关键词搜索 | 只输入不发送 |
+| 智联招聘 | `com.zhaopin.social` | 关键词搜索 | 只输入不发送 |
+| 猎聘 | `com.lietou.mishu` | 关键词搜索 | 发送前确认 |
 
-## 🚀 快速开始
+平台页面结构可能随 App 版本变化而调整。首次使用某个平台时，建议先用低风险模式验证流程。
+
+## 快速开始
 
 ### 环境要求
 
 - Android Studio Hedgehog 或更高版本
-- Android 设备（API 24+，即 Android 7.0 以上）
-- 目标招聘平台 App 已安装
+- Android 7.0 及以上设备或模拟器，API 24+
+- 已安装目标招聘平台 App
+- 手动开启 JobGuide 的无障碍服务权限
 
 ### 编译安装
 
 ```bash
-# 克隆项目
-git clone https://github.com/你的用户名/JobGuide.git
+# 克隆仓库
+git clone https://github.com/CODE-OF-ZHANG/JobGuide.git
 cd JobGuide
 
 # 编译 Debug APK
 ./gradlew assembleDebug
 
-# APK 输出位置
+# 输出位置
 # app/build/outputs/apk/debug/app-debug.apk
 ```
 
-或用 Android Studio 直接打开项目，等待 Gradle 同步完成后点击 Run。
+也可以用 Android Studio 直接打开项目，等待 Gradle 同步完成后点击 Run。
 
-### 使用步骤
+### 使用流程
 
-1. **安装并打开**职引助手
-2. **开启无障碍权限** — 在"我的"页或执行页点击"去设置"，在系统设置中开启职引助手的无障碍服务
-3. **配置关键词** — 在关键词页添加搜索关键词，设置每个关键词的打招呼上限
-4. **配置规则** — 在规则页设置目标城市、薪资范围、白名单、黑名单、风险停止词
-5. **配置模板** — 在模板页编写打招呼文案，使用 `{name}`、`{job_title}` 等变量
-6. **选择模式** — 建议先用"发送前确认"模式熟悉流程
-7. **点击开始** — 自动打开招聘平台 App 并执行自动化流程
+1. 安装并打开职引助手。
+2. 在“我的”页或“执行”页进入系统设置，开启职引助手无障碍服务。
+3. 在“关键词”页添加搜索关键词，并设置每个关键词的处理上限和沟通上限。
+4. 在“规则”页配置目标城市、薪资范围、白名单、黑名单和风险停止词。
+5. 在“模板”页编写打招呼文案，按需使用变量占位符。
+6. 在“执行”页选择招聘平台、岗位来源和运行模式。
+7. 建议先选择“发送前确认”，确认流程稳定后再考虑更自动化的模式。
 
-## ⚙️ 配置说明
+## 配置说明
 
 ### 关键词配置
 
-每个关键词支持：
-- 启用/停用开关
-- 处理岗位数量上限
-- 打招呼数量上限
-- 优先级排序
+每个关键词可以单独控制是否启用、处理岗位数量、打招呼数量上限和执行顺序。适合同时投递多个方向，例如“软件测试”“AI 开发”“人工智能”等。
 
 ### 规则配置
 
-| 配置项 | 说明 | 默认值 |
-|:---|:---|:---|
-| 目标城市 | 只处理指定城市的岗位 | `城市` |
-| 薪资范围 | 过滤不在范围内的岗位 | 5K - 15K |
-| 必备关键词 | 岗位必须包含的关键词 | `关键词1, 关键词2` |
-| 岗位白名单 | 包含白名单词的岗位加分 | `岗位白名单1, 岗位白名单2` |
-| 岗位黑名单 | 包含黑名单词的岗位直接跳过 | `销售, 电销, 外包...` |
-| 风险停止词 | 检测到时立即停止任务 | `验证码, 安全验证...` |
-| 每日总上限 | 每天最多打招呼次数 | 15 |
-| 随机间隔 | 两次操作之间的随机等待秒数 | 5-12 秒 |
-| 最低评分 | 低于此分数的岗位跳过 | 40 |
+| 配置项 | 作用 |
+|:---|:---|
+| 目标城市 | 只处理指定城市的岗位 |
+| 薪资范围 | 跳过不在期望范围内的岗位 |
+| 必备关键词 | 岗位信息必须包含指定关键词 |
+| 岗位白名单 | 命中后增加匹配评分 |
+| 岗位黑名单 | 命中后直接跳过 |
+| 风险停止词 | 检测到验证码、安全验证等内容时停止任务 |
+| 每日总上限 | 限制每天最多发送的打招呼次数 |
+| 随机间隔 | 控制两次操作之间的等待时间 |
+| 最低评分 | 低于分数线的岗位不处理 |
 
-### 打招呼模板
+### 模板变量
 
-支持以下变量自动替换：
-
-| 变量 | 替换为 |
+| 变量 | 替换内容 |
 |:---|:---|
 | `{name}` | 求职者姓名 |
 | `{job_title}` | 岗位名称 |
@@ -122,123 +130,136 @@ cd JobGuide
 | `{skills}` | 技能标签 |
 | `{keyword}` | 当前搜索关键词 |
 
-### JSON 配置导入导出
+### JSON 导入导出
 
-在"我的"页可以导入/导出完整的 JSON 配置，方便在多台设备间同步设置。
+在“我的”页可以导入或导出完整 JSON 配置，用于备份、迁移或在多台设备之间同步。
 
-## 🛡️ 安全机制
+## 安全边界与免责声明
 
-- **风险检测**：遇到验证码、安全验证、账号异常、操作频繁等提示时自动停止
-- **盲目防护**：找不到关键按钮时暂停，不进行盲目点击
-- **限额控制**：每日总打招呼上限 + 每个关键词上限，双重保护
-- **指纹去重**：已处理岗位通过指纹去重，避免重复打招呼
-- **手动确认**：自动发送需同时开启运行模式和自动打招呼开关
-- **随机间隔**：操作之间加入随机等待，降低风控风险
+JobGuide 的目标是辅助用户减少重复操作，不是批量骚扰工具，也不是绕过平台风控的工具。
 
-## 🏗️ 技术架构
+- 不保存招聘平台账号、密码、验证码或登录态。
+- 不调用招聘平台的非公开接口。
+- 不绕过验证码、登录异常、安全校验或风控提示。
+- 检测到风险停止词、找不到关键按钮或页面状态异常时会停止任务。
+- 不建议无人值守高频运行，建议设置较低每日上限并使用随机间隔。
+- 使用者需要自行遵守招聘平台使用条款、隐私政策和当地法律法规。
 
-```
-┌─────────────────────────────────────────┐
-│              Jetpack Compose UI          │
-│  (JobGuideApp · JobGuideViewModel)      │
-├─────────────────────────────────────────┤
-│              DataStore Preferences       │
-│  (AppConfig · RunStats · Logs · Records)│
-├─────────────────────────────────────────┤
-│           AccessibilityService           │
-│  (JobGuideAccessibilityService)          │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ │
-│  │PageHeuristics│ │JobMatcher│ │NodeExt  │ │
-│  └──────────┘ └──────────┘ └──────────┘ │
-├─────────────────────────────────────────┤
-│         目标招聘平台 App                  │
-│  (BOSS直聘 · 51job · 智联 · 猎聘)       │
-└─────────────────────────────────────────┘
+本项目仅供学习和研究使用。因使用本项目造成的账号限制、平台处罚或其他后果，均由使用者自行承担。
+
+## 技术架构
+
+```text
+┌──────────────────────────────────────────────┐
+│ Jetpack Compose UI                           │
+│ JobGuideApp / JobGuideViewModel              │
+└──────────────────────┬───────────────────────┘
+                       │ issueCommand
+                       ▼
+┌──────────────────────────────────────────────┐
+│ DataStore Preferences                        │
+│ AppConfig / RunStats / Logs / Records        │
+└───────────────┬──────────────────────▲───────┘
+                │ collect command      │ state flow
+                ▼                      │
+┌──────────────────────────────────────────────┐
+│ AccessibilityService                         │
+│ JobGuideAccessibilityService                 │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│ Automation Engine                            │
+│ PageHeuristics / JobMatcher / NodeExt        │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│ 目标招聘平台 App                              │
+│ BOSS 直聘 / 51job / 智联招聘 / 猎聘           │
+└──────────────────────────────────────────────┘
 ```
 
 ### 核心模块
 
 | 模块 | 文件 | 职责 |
 |:---|:---|:---|
-| 无障碍服务 | `JobGuideAccessibilityService.kt` | 读取屏幕、模拟点击、自动化流程 |
-| 页面识别 | `PageHeuristics.kt` | 基于文本特征判断当前页面类型 |
-| 节点扩展 | `AccessibilityNodeExt.kt` | 无障碍节点查找、点击、输入工具方法 |
-| 岗位匹配 | `JobMatcher.kt` | 基于规则和评分的岗位筛选逻辑 |
-| 数据模型 | `Models.kt` | 配置、状态、日志、记录等数据类 |
-| 数据仓库 | `JobGuideRepository.kt` | DataStore 读写和状态管理 |
-| 视图模型 | `JobGuideViewModel.kt` | UI 状态管理和业务逻辑 |
-| 界面 | `JobGuideApp.kt` | Compose UI 全部页面 |
+| 无障碍服务 | `JobGuideAccessibilityService.kt` | 读取页面文本、模拟点击和输入、控制自动化流程 |
+| 页面识别 | `PageHeuristics.kt` | 根据页面文本特征判断当前页面类型 |
+| 节点扩展 | `AccessibilityNodeExt.kt` | 封装无障碍节点查找、点击和输入能力 |
+| 岗位匹配 | `JobMatcher.kt` | 根据规则和评分筛选岗位 |
+| 数据模型 | `Models.kt` | 定义配置、状态、日志和记录 |
+| 数据仓库 | `JobGuideRepository.kt` | 负责 DataStore 读写和状态管理 |
+| 视图模型 | `JobGuideViewModel.kt` | 管理 UI 状态和业务动作 |
+| Compose 界面 | `JobGuideApp.kt` | 实现执行、关键词、规则、模板、日志、我的等页面 |
 
-### 通信机制
+## 项目结构
 
-UI（ViewModel）和 AccessibilityService 之间通过 DataStore 命令通道通信：
-
+```text
+app/src/main/java/com/zhiyin/jobguide/
+├── MainActivity.kt
+├── automation/
+│   ├── AccessibilityNodeExt.kt
+│   ├── JobGuideAccessibilityService.kt
+│   ├── JobMatcher.kt
+│   └── PageHeuristics.kt
+├── data/
+│   ├── JobGuideRepository.kt
+│   ├── Models.kt
+│   └── ServiceLocator.kt
+├── notification/
+│   └── StopNotifier.kt
+└── ui/
+    ├── JobGuideApp.kt
+    ├── JobGuideViewModel.kt
+    └── theme/
 ```
-ViewModel ──issueCommand──▶ DataStore ──collect──▶ AccessibilityService
-         ◀──stats/logs/records── DataStore ◀──write──
-```
 
-## 🧪 测试
+## 测试
 
 ```bash
-# 编译验证
-./gradlew assembleDebug
-
 # 运行单元测试
 ./gradlew test
 
-# 测试覆盖：页面识别、岗位匹配、薪资解析、JSON导入导出
+# 编译 Debug APK
+./gradlew assembleDebug
 ```
 
-## 📁 项目结构
+当前重点测试覆盖页面识别、岗位匹配、薪资解析和 JSON 导入导出等核心逻辑。
 
-```
-app/src/main/java/com/zhiyin/jobguide/
-├── MainActivity.kt                    # 主 Activity
-├── automation/
-│   ├── JobGuideAccessibilityService.kt  # 无障碍服务核心逻辑
-│   ├── AccessibilityNodeExt.kt          # 节点操作扩展
-│   ├── JobMatcher.kt                    # 岗位评分匹配
-│   └── PageHeuristics.kt                # 页面类型识别
-├── data/
-│   ├── Models.kt                        # 数据模型和JSON序列化
-│   ├── JobGuideRepository.kt            # DataStore 数据仓库
-│   └── ServiceLocator.kt                # 依赖注入
-├── notification/
-│   └── StopNotifier.kt                  # 任务停止通知
-└── ui/
-    ├── JobGuideApp.kt                   # Compose 全部页面
-    ├── JobGuideViewModel.kt             # 视图模型
-    └── theme/                            # 主题配置
+## Roadmap
+
+- [ ] 增加更多招聘平台和页面版本适配。
+- [ ] 提供规则调试页，解释岗位被接受或跳过的原因。
+- [ ] 支持任务回放，帮助定位页面识别失败场景。
+- [ ] 导出统计报表，便于复盘关键词和平台效果。
+- [ ] 通过 GitHub Releases 发布可安装 APK。
+
+## 贡献指南
+
+欢迎提交 Issue 或 Pull Request。建议在改动前先说明问题背景、复现步骤和预期行为，便于讨论实现边界。
+
+```bash
+git checkout -b feature/your-feature
+./gradlew test
+git commit -m "feat: describe your change"
 ```
 
-## 🤝 贡献指南
+开发建议：
 
-1. Fork 本仓库
-2. 创建功能分支：`git checkout -b feature/your-feature`
-3. 提交更改：`git commit -m 'feat: add your feature'`
-4. 推送分支：`git push origin feature/your-feature`
-5. 提交 Pull Request
+- Kotlin 优先，遵循 MVVM 思路组织状态和业务逻辑。
+- 避免使用 `!!` 非空断言，优先使用 Kotlin 空安全能力。
+- 新增权限、平台适配或高风险能力时，需要同步更新 README 的安全说明。
+- 涉及自动化流程的改动，建议补充页面识别或岗位匹配相关测试。
 
-### 开发规范
+## License
 
-- Kotlin 优先，遵循 MVVM / Clean Architecture
-- 禁止使用 `!!` 非空断言，优先使用 `?.let`、`as?` 等空安全操作
-- 网络/数据库/文件操作必须在子线程
-- 新增权限须在 README 中说明是否需要动态申请
-
-## ⚠️ 免责声明
-
-本项目仅供学习和研究目的。使用者需遵守相关招聘平台的使用条款和当地法律法规。作者不对因使用本工具产生的任何后果负责。
-
-## 📄 开源协议
-
-[MIT License](LICENSE)
+本项目基于 [MIT License](LICENSE) 开源。
 
 ---
 
 <div align="center">
 
-如果这个项目对你有帮助，请给一个 ⭐ Star！
+如果这个项目对你有帮助，欢迎点一个⭐  Star。
 
-</div>
+
